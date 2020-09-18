@@ -12,10 +12,19 @@ To generate timely results, this project looked at prioritising the analytical t
 ## Usage
 **Reading in the data and basic tidying**
 ```{r}
-```
+#Load the required libraries
+library(openxlsx)
+library(tidyverse)
 
-
-```{r}
+#Importing the lookup table
+lookup <-  read.xlsx("Profiles.xlsx", sheet = "Lookup", rowNames = F, colNames = T, detectDates = T)
+#Importing Gas Chromatpgraphy Mass Spectometry data and removing specimens which have data for two or less variables
+GC <-  as.data.frame(read.xlsx("Data/Profiles.xlsx", sheet = "GCMS", rowNames = T, colNames = T))
+GC <-  filter(GC,!rowSums(GC!=0)<=2)
+#Importing Isotopic Ratio Mass Spectrometry data
+IR <-  as.data.frame(read.xlsx("Data/Profiles.xlsx", sheet = "IRMS", rowNames = T, colNames = T))
+#Importing Capillary Electrophoresis data
+CE <- as.data.frame(read.xlsx("Data/Profiles.xlsx", sheet = "CE", rowNames = T, colNames = T))
 ```
 
 

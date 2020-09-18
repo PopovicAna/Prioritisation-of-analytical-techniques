@@ -381,6 +381,19 @@ summary {
 <div id="usage" class="section level2">
 <h2>Usage</h2>
 <p><strong>Reading in the data and basic tidying</strong></p>
+<pre class="{r}"><code>#Load the required libraries
+library(openxlsx)
+library(tidyverse)
+
+#Importing the lookup table
+lookup &lt;-  read.xlsx(&quot;Profiles.xlsx&quot;, sheet = &quot;Lookup&quot;, rowNames = F, colNames = T, detectDates = T)
+#Importing Gas Chromatpgraphy Mass Spectometry data and removing specimens which have data for two or less variables
+GC &lt;-  as.data.frame(read.xlsx(&quot;Data/Profiles.xlsx&quot;, sheet = &quot;GCMS&quot;, rowNames = T, colNames = T))
+GC &lt;-  filter(GC,!rowSums(GC!=0)&lt;=2)
+#Importing Isotopic Ratio Mass Spectrometry data
+IR &lt;-  as.data.frame(read.xlsx(&quot;Data/Profiles.xlsx&quot;, sheet = &quot;IRMS&quot;, rowNames = T, colNames = T))
+#Importing Capillary Electrophoresis data
+CE &lt;- as.data.frame(read.xlsx(&quot;Data/Profiles.xlsx&quot;, sheet = &quot;CE&quot;, rowNames = T, colNames = T))</code></pre>
 </div>
 <div id="author" class="section level2">
 <h2>Author</h2>
