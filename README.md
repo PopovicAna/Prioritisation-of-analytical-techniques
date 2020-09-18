@@ -1,7 +1,7 @@
 # Prioritisation-of-analytical-techniques
 Use of Reciever Operating Characteristic (ROC) curves to prioritise analytical techniques used for illicit drug profiling
 
-## Description
+## Description + more
 The following program reads in simulated drug profiling data (original data cannot be diseminated), performs a target variable selection, pre-treatment (PT) and runs multiple comparison metrics (CM) on the data. The area under the ROC curve is calculated for each combination of PT and CM to determine the optimal combination, i.e. highest area under the ROC curve. The optimal combination of PT and CM is compared across analytical techniques to determine which technique provides the most discrimination between illicit drug profiles, hence allowing techniques to be prioritised based on their level of discrimination power.
 
 ## Significance
