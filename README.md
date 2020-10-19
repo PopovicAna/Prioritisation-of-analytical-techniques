@@ -1,5 +1,5 @@
 
-# Prioritisation-of-analytical-techniques
+# Prioritisation of analytical techniques
 
 Use of Receiver Operating Characteristic (ROC) curves to prioritise
 analytical techniques used for illicit drug profiling
