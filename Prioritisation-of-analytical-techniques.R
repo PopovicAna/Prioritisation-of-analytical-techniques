@@ -9,12 +9,11 @@ library(ggcorrplot)
 library(pROC)
 library(ggh4x)
 
-#Importing the lookup table
+#Importing the Lookup table (contains data about Specimens (i.e. Seizure, Date, Purity, Precursor, etc.)
 Lookup <-  read.xlsx("Data/Profiles.xlsx", sheet = "Lookup", rowNames = F, colNames = T, detectDates = T)
 
 #Importing Gas Chromatpgraphy Mass Spectometry data and removing specimens with 2 or less variables
 GCMS <-  as.data.frame(read.xlsx("Data/Profiles.xlsx", sheet = "GCMS", rowNames = T, colNames = T))
-GCMS <-  GCMS[!rowSums(GCMS!=0)<=2,]
 
 #Importing Isotopic Ratio Mass Spectrometry data
 IRMS <-  as.data.frame(read.xlsx("Data/Profiles.xlsx", sheet = "IRMS", rowNames = T, colNames = T))
@@ -36,8 +35,8 @@ Bar <- ggplot(Count, aes(Variables, Percentage*100)) +
   theme_light()+
   theme(axis.title.x = element_text(face="bold",size = 12,margin=margin(10,0,0,0)),
         axis.title.y = element_text(face="bold",size = 12,margin=margin(0,10,0,0)),
-        axis.text.y = element_text(size = 8),
-        axis.text.x = element_text(size = 8, angle = 90, vjust = 0.5),
+        axis.text.y = element_text(size = 10),
+        axis.text.x = element_text(size = 10, vjust = 0.5),
         panel.grid = element_blank(),
         panel.background=element_rect(fill=NA),
         legend.position = "none")+
@@ -50,46 +49,46 @@ Specimen_List <- data.frame(row.names = rownames(GCMS))
 Specimen_List$Group <- Lookup$Group[match(row.names(Specimen_List),Lookup$Specimen)]
 Specimen_List$Count <- plyr::count(Specimen_List,"Group")$freq[match(Specimen_List$Group,plyr::count(Specimen_List,"Group")$Group)]
 
-Lkd <- lapply(c("G_158","G_030","G_162","G_285"),function(szn){
-  X = stack(subset(GCMS, row.names(GCMS) %in% row.names(Specimen_List[Specimen_List$Group==szn,])))
-  X$Group = rep(szn,nrow(X))
+Lkd <- lapply(c("G_158","G_030","G_162","G_285"),function(SG){
+  X = stack(subset(GCMS, row.names(GCMS) %in% row.names(Specimen_List[Specimen_List$Group==SG,])))
+  X$Group = rep(SG,nrow(X))
   return(X)
 })
 ULkd <-  stack(subset(GCMS, row.names(GCMS) %in% row.names(Specimen_List[Specimen_List$Count==1,])))
 ULkd$Group <- rep("Multiple",nrow(ULkd))
 Group.labs <- c("Inter-variability",
-                "Intra-variability of Group A (n = 9)",
-                "Intra-variability of seizure B (n = 10)",
-                "Intra-variability of seizure C (n = 8)",
-                "Intra-variability of seizure D (n = 9)")
+                "Intra-variability of Group B",
+                "Intra-variability of Group A",
+                "Intra-variability of Group C",
+                "Intra-variability of Group D")
 names(Group.labs) <- c("Multiple","G_158","G_030","G_162","G_285")
 
 BoxP <- rbind(do.call(rbind,Lkd),ULkd)
 
-psplit <- ggplot(BoxP, aes(x=ind,y=values)) + 
-  geom_boxplot(outlier.shape=1,outlier.size=1,lwd=0.3) +
-  facet_wrap(~Group, scale= "fixed", ncol=1, labeller = labeller(Group=Group.labs)) +
+psplit <- ggplot(BoxP, aes(x = ind,y = values)) + 
+  geom_boxplot(outlier.shape = 1,outlier.size = 1,lwd = 0.3) +
+  facet_wrap(~ Group, scale = "free_y", ncol=1, labeller = labeller(Group = Group.labs)) +
   labs(x="Target variables",y="Pre-treated variable intensity") +
   theme_light()+
-  theme(axis.title.x = element_text(face="bold",size = 12,margin=margin(10,0,0,0)),
-        axis.title.y = element_text(face="bold",size = 12,margin=margin(0,10,0,0)),
-        axis.text.y = element_text(size = 8),
-        axis.text.x = element_text(size = 8, angle = 0, vjust = 0.5),
-        strip.text=element_text(face="bold"),
-        legend.position="none",
+  theme(axis.title.x = element_text(face="bold", size = 12, margin = margin(10,0,0,0)),
+        axis.title.y = element_text(face="bold", size = 12, margin = margin(0,10,0,0)),
+        axis.text.y = element_text(size = 10),
+        axis.text.x = element_text(size = 10, angle = 0, vjust = 0.5),
+        strip.text = element_text(size = 10, face = "bold"),
+        legend.position = "none",
         panel.grid.major = element_blank(),
         panel.grid.minor = element_blank())
 psplit
 
 # (3) Correlation of variables
-M = cor(GCMS,method = "spearman")
-corrplot <- ggcorrplot(M, type = "upper",outline.col = "white", p.mat = ggcorrplot::cor_pmat(M),
-                       colors = c("#595959", "white", "#595959"))+
-  theme(axis.text.y = element_text(size = 8),
-        axis.text.x = element_text(size = 8, angle = 0, hjust = 0.5),
+M = cor(GCMS, method = "spearman")
+corrplot <- ggcorrplot(M, method = "square", type = "upper", outline.col = "white", lab = TRUE, 
+                       p.mat = ggcorrplot::cor_pmat(M, method = "spearman"), insig = "blank",
+                       colors = c("#6D9EC1", "white", "#E46726")) +
+  theme(axis.text.y = element_text(size = 10),
+        axis.text.x = element_text(size = 10, angle = 0, vjust = 0.5),
         panel.grid.minor = element_blank())
 corrplot
-
 
 
 # Optimisation of the linked and unlinked specimen populations: -----------
@@ -97,50 +96,69 @@ corrplot
 # Reading in several functions needed for subsequent analysis
 source("Files/DataOptFunctions.R", local = T)
 
-#### GCMS 
-# Applying population rules and comparison metrics to the data
-GCMS_CM_R = 
-  lapply(
-    list(CAN=CAN,EUC=EUC,MAN=MAN,MCF=MCF,PCC=PCC),
-    function(CMs){
-      list(
-        R1 = R1(CMs(as.matrix(GCMS))),
-        R2 = data.frame(R2(CMs(L(GCMS)),CMs(U(GCMS)))),
-        R3 = R3(CMs(as.matrix(GCMS))),
-        R4 = data.frame(R4(CMs(L(GCMS)),CMs(as.matrix(GCMS)))))
+#### GCMS
+
+# Extracting the chosen target variables for subsequent analysis
+GCMS_TV <- GCMS %>% select(!V10)
+
+# Applying pre-treatments
+GCMS_TV_N <- GCMS_TV/rowSums(GCMS_TV)
+GCMS_TV_N2R <- GCMS_TV_N^0.5
+GCMS_TV_N4R <- GCMS_TV_N^0.25
+
+# Applying population rules and comparison metrics to the pre-treated data
+GCMS_PT_CM_R <-  
+  lapply(  
+    list(N=GCMS_TV_N,N2R=GCMS_TV_N2R,N4R=GCMS_TV_N4R), 
+    function(X){
+      lapply(
+        list(CAN=CAN,EUC=EUC,MAN=MAN,MCF=MCF,PCC=PCC),
+        function(CM,PT){
+          list(
+            R1 = R1(CM(as.matrix(PT))),
+            R2 = data.frame(R2(CM(L(PT)),CM(U(PT)))),
+            R3 = R3(CM(as.matrix(PT))),
+            R4 = data.frame(R4(CM(L(PT)),CM(as.matrix(PT)))))
+        },
+        PT=X)
     })
 
 # Adding in comparison metric and pupulation rule info
-for(i in 1:length(GCMS_CM_R)){
-  for(j in 1:length(GCMS_CM_R[[1]])){
-    GCMS_CM_R[[i]][[j]]$Freq = (GCMS_CM_R[[i]][[j]]$Freq/max(GCMS_CM_R[[i]][[j]]$Freq))*100
-    GCMS_CM_R[[i]][[j]]$CM = rep(c("CAN","EUC","MAN","MCF","PCC")[i],nrow(GCMS_CM_R[[i]][[j]]))
-    GCMS_CM_R[[i]][[j]]$R = rep((paste0("R",j)),nrow(GCMS_CM_R[[i]][[j]])) 
+for(i in 1:length(GCMS_PT_CM_R)){
+  for(j in 1:length(GCMS_PT_CM_R[[1]])){
+    for(k in 1:length(GCMS_PT_CM_R[[1]][[1]])){
+      GCMS_PT_CM_R[[i]][[j]][[k]]$Freq = (GCMS_PT_CM_R[[i]][[j]][[k]]$Freq/max(GCMS_PT_CM_R[[i]][[j]][[k]]$Freq))*100
+      GCMS_PT_CM_R[[i]][[j]][[k]]$PT = rep(c("N","N2R","N4R")[i],nrow(GCMS_PT_CM_R[[i]][[j]][[k]]))
+      GCMS_PT_CM_R[[i]][[j]][[k]]$CM = rep(c("CAN","EUC","MAN","MCF","PCC")[j],nrow(GCMS_PT_CM_R[[i]][[j]][[k]]))
+      GCMS_PT_CM_R[[i]][[j]][[k]]$R = rep((paste0("R",k)),nrow(GCMS_PT_CM_R[[i]][[j]][[k]])) 
+    }
   }
 }
 
 # Extracting the area under curve (AUC) of each reciever operating characteristic (ROC) calculation
-GCMS_CM_R <- do.call(rbind,do.call(rbind,GCMS_CM_R))
+GCMS_PT_CM_R <- do.call(rbind,do.call(rbind,do.call(rbind,GCMS_PT_CM_R)))
 
-GCMS_AUC <- GCMS_CM_R %>% 
-  group_by(CM,R) %>% 
+GCMS_AUC <- GCMS_PT_CM_R %>% 
+  group_by(PT,CM,R) %>% 
   group_map(~{roc(.x$label, .x$Freq, levels = c("Inter", "Intra"), direction = ">")$auc})
 
-GCMS_ROC <- data.frame(AUC = unlist(GCMS_AUC)) %>% bind_cols(GCMS_CM_R %>% distinct(CM,R))
+GCMS_ROC <- data.frame(AUC = unlist(GCMS_AUC)) %>% bind_cols(GCMS_PT_CM_R %>% distinct(PT,CM,R))
 
 # Defining the optimal comparison metric and population rule based on the ROC AUC
 OPT_GCMS_AUC <- max(GCMS_ROC$AUC)
+OPT_GCMS_PT <- GCMS_ROC[which.max(GCMS_ROC$AUC),"PT"]
 OPT_GCMS_CM <- GCMS_ROC[which.max(GCMS_ROC$AUC),"CM"]
 OPT_GCMS_PR <- GCMS_ROC[which.max(GCMS_ROC$AUC),"R"]
 
-OPT_GCMS_CM_R <- GCMS_CM_R %>%
-  filter(CM == OPT_GCMS_CM,
+OPT_GCMS_PT_CM_R <- GCMS_PT_CM_R %>%
+  filter(PT == OPT_GCMS_PT,
+         CM == OPT_GCMS_CM,
          R == OPT_GCMS_PR)
 
 # Visualising the seperation between linked and unlinked populations for each CM and PR combination
-ggplot(GCMS_CM_R, aes(x=label, y=Freq)) + 
+ggplot(OPT_GCMS_PT_CM_R, aes(x=label, y=Freq)) + 
   geom_boxplot(outlier.shape=1,outlier.size=1) + 
-  facet_grid(CM~R, scales="free")+
+  facet_nested(PT+CM~R, scales="free")+
   labs(y="CM score")+
   scale_fill_manual(values=c("white","white"))+
   theme_light()+
@@ -152,7 +170,7 @@ ggplot(GCMS_CM_R, aes(x=label, y=Freq)) +
         panel.grid.minor=element_blank())
 
 # Density plot of the optimal CM and PR combination
-ggplot(OPT_GCMS_CM_R,aes(x=Freq,colour=label))+
+ggplot(OPT_GCMS_PT_CM_R,aes(x=Freq,colour=label))+
   geom_density()+
   coord_cartesian(xlim = c(0,100))+
   labs(x="CM score",y="Frequency (%)")+                          
