@@ -19,7 +19,7 @@ technique provides the most discrimination between illicit drug
 profiles, hence allowing techniques to be prioritised based on their
 level of discrimination power. ![*Figure 1: Process for identifying the
 optimal comparison process for a profile type (i.e. analytical
-technique).*](Docs/Opt_ROC.png)
+technique).*](Files/Opt_ROC.png)
 
 ## Significance
 
@@ -46,14 +46,14 @@ library(openxlsx)
 library(tidyverse)
 ```
 
-    ## -- Attaching packages -------------------------------------------------------------------- tidyverse 1.3.0 --
+    ## -- Attaching packages ----------------------------------------------------------------------------------------------- tidyverse 1.3.0 --
 
     ## v ggplot2 3.3.0     v purrr   0.3.4
     ## v tibble  3.0.1     v dplyr   0.8.5
     ## v tidyr   1.0.2     v stringr 1.4.0
     ## v readr   1.3.1     v forcats 0.5.0
 
-    ## -- Conflicts ----------------------------------------------------------------------- tidyverse_conflicts() --
+    ## -- Conflicts -------------------------------------------------------------------------------------------------- tidyverse_conflicts() --
     ## x dplyr::filter() masks stats::filter()
     ## x dplyr::lag()    masks stats::lag()
 
@@ -175,7 +175,7 @@ that there was a large intra-variability between the MA specimens, which
 caused a large overlap between the linked and unlinked distributions.
 
 ``` r
-source("DataOptFunctions.R", local = T)
+source("Files/DataOptFunctions.R", local = T)
 ```
 
 ## Results

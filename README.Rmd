@@ -7,7 +7,9 @@ Use of Receiver Operating Characteristic (ROC) curves to prioritise analytical t
 
 ## Description
 The following code reads in simulated data (*original data cannot be disseminated*) for illicit drug specimens, whcih have been pprfiled through several analytical techniques. The code then performs a target variable selection, pre-treatment (PT), runs multiple comparison metrics (CM) and takes into account different rules for defining specimen populations. The area under the ROC curve is calculated for each combination of PT and CM to determine the optimal combination, i.e. highest area under the ROC curve. The optimal combination of PT and CM is compared across analytical techniques to determine which technique provides the most discrimination between illicit drug profiles, hence allowing techniques to be prioritised based on their level of discrimination power.
-![*Figure 1: Process for identifying the optimal comparison process for a profile type (i.e. analytical technique).*](Files/Opt_ROC.png)
+![](Files/Opt_ROC.png)  
+
+*Figure 1: Process for identifying the optimal comparison process for a profile type (i.e. analytical technique).*
 
 
 
@@ -118,7 +120,7 @@ The newly defined GCMS target variables
 Define linked (intra-variability) and unlinked (inter-variability). 
 It was discovered that there was a large intra-variability between the MA specimens, which caused a large overlap between the linked and unlinked distributions.
 ```{r}
-source("DataOptFunctions.R", local = T)
+source("Files/DataOptFunctions.R", local = T)
 
 ```
 
