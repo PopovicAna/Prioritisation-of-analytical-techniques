@@ -118,7 +118,7 @@ The newly defined GCMS target variables
 Define linked (intra-variability) and unlinked (inter-variability). 
 It was discovered that there was a large intra-variability between the MA specimens, which caused a large overlap between the linked and unlinked distributions.
 ```{r}
-source("DataOptFunctions.R", local = T)
+source("Files/DataOptFunctions.R", local = T)
 
 ```
 
