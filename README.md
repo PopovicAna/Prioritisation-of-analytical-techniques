@@ -1,24 +1,19 @@
 
-  - [Prioritisation of analytical
-    techniques](#prioritisation-of-analytical-techniques)
-      - [Description](#description)
-      - [Significance](#significance)
-      - [Usage](#usage)
-          - [**Reading in the data and basic
-            tidying:**](#reading-in-the-data-and-basic-tidying)
-          - [**Choosing target variables for GCMS
-            profiles:**](#choosing-target-variables-for-gcms-profiles)
-          - [**Optimisation of the linked and unlinked specimen
-            populations:**](#optimisation-of-the-linked-and-unlinked-specimen-populations)
-      - [Summary of results](#summary-of-results)
-      - [Author](#author)
-      - [Acknowledgements](#acknowledgements)
-      - [References](#references)
-
 # Prioritisation of analytical techniques
 
 Use of Receiver Operating Characteristic (ROC) curves to prioritise
 analytical techniques used for illicit drug profiling
+
+## Table of contents
+
+  - [Description](https://github.com/PopovicAna/Prioritisation-of-analytical-techniques#Description)
+  - [Significance](https://github.com/PopovicAna/Prioritisation-of-analytical-techniques#Significance)
+  - [Usage](https://github.com/PopovicAna/Prioritisation-of-analytical-techniques#Usage)
+  - [Sumamry of
+    results](https://github.com/PopovicAna/Prioritisation-of-analytical-techniques#Summary-of-results)
+  - [Author](https://github.com/PopovicAna/Prioritisation-of-analytical-techniques#Author)
+  - [Acknowledgements](https://github.com/PopovicAna/Prioritisation-of-analytical-techniques#Acknowledgements)
+  - [References](https://github.com/PopovicAna/Prioritisation-of-analytical-techniques#References)
 
 ## Description
 
@@ -123,7 +118,7 @@ The presence of variables in each specimen needs to be identified as it
 common for these variables not to be detected \[3\], whether that be due
 to the limit of detection of the analytical instrument or the target
 variable simply being absent. As shown in Figure 2, all variables were
-present in more than 25% of specimens meaning that none of the vairables
+present in more than 25% of specimens meaning that none of the variables
 are redundant with respect to this criterion.
 
 **(2) Intra-variability and inter-variability of variables**
@@ -171,7 +166,7 @@ psplit
 several large seizures were selected to visualise the intra-variability*
 
 As well as assessing the presence of variables in specimens, the intra-
-and inter-variability was evaluated. Boxplots were selected as the
+and inter-variability was evaluated. Box plots were selected as the
 visualisation method to support interpretation of the data. Several
 larger seizures were selected to visualise the intra-variability, they
 can be seen in Figure 3. The inter-variability is represented by single
@@ -204,7 +199,7 @@ correlation coefficient above an absolute value of 0.7 is generally
 considered to be strong \[4\]. Of the correlations which are
 statistically significant none of the correlation values are above an
 absolute value of 0.7. It was decided to not remove any variables
-considering thet results of this criterion.
+considering the results of this criterion.
 
 In summary, it was decided to only remove V10 from subsequent analysis
 due to the results of the second criterion.
@@ -223,8 +218,8 @@ level of association between profiles, CMs can be applied to pre-treated
 data. A range of CM and PT combinations have been applied in the area of
 illicit drugs \[6\]. The optimum combination of CM and PT will ensure
 the greatest separation between linked (specimens from the same seizure)
-and unlinked (specimens from differnt seizures) populations. Optimising
-the seperation between the two populations in turn minimises false
+and unlinked (specimens from different seizures) populations. Optimising
+the separation between the two populations in turn minimises false
 positive (FP) and false negative (FN) specimen linkages.
 
 ![](Files/Populations.png)
@@ -237,7 +232,7 @@ It was discovered that there was a large intra-variability between the
 MA specimens, which caused a large overlap between the linked and
 unlinked distributions. For this reason, it was decided to test several
 rules for defining the two populations (PR) to see how they would affect
-their seperation. The rules are defined as follows:
+their separation. The rules are defined as follows:
 
 | Rule | Linked Population                                                                                                                                         | Unlinked Population                                                                                                                 |
 | ---- | --------------------------------------------------------------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------- |
@@ -249,7 +244,8 @@ their seperation. The rules are defined as follows:
 For the full list of PTs, CMs and PRs used in this analysis please see
 the “DataOptFunctions.R” file.
 
-**A GCMS example - defining the optimal combination of PT, CM and PR**
+**A GCMS example - determining the optimal combination of PT, CM and
+PR**
 
 ``` r
 # Reading in several functions needed for subsequent analysis
@@ -310,14 +306,6 @@ OPT_GCMS_PT_CM_R <- GCMS_PT_CM_R %>%
          R == OPT_GCMS_PR)
 ```
 
-For the GCMS dataset the optimal values are as follows:
-
-| Measure | Value |
-| ------- | ----- |
-| PT      | N4R   |
-| CM      | PCC   |
-| PR      | R4    |
-
 ``` r
 # Visualising the seperation between linked and unlinked populations for each CM and PR combination
 ggplot(GCMS_PT_CM_R, aes(x=label, y=Freq)) + 
@@ -339,7 +327,7 @@ ggplot(GCMS_PT_CM_R, aes(x=label, y=Freq)) +
 *Figure 6: Inter- and intra-variability of scores between ENIPID GC-MS
 profiles for combinations of PTs, CMs and PRs*
 
-**Visualising the optimal seperation between populations**
+**Visualising the optimal separation between populations**
 
 ``` r
 # Density plot of the optimal CM and PR combination
@@ -363,28 +351,19 @@ ggplot(OPT_GCMS_PT_CM_R,aes(x=Freq,colour=label))+
 inter-variability (black line) of ENIPID GC-MS profiles, using the
 N4R/PCC/R4 combination*
 
-**IRMS and CE - defining the optimal combination of PT, CM and PR**
+**The optimal combination of PT, CM and PR for each analytical
+technique**
 
 Following the same method applied to the GCMS dataset the optimal values
-for IRMS and CE are as follows:
+for all three analytical techniques are as follows:
 
-IRMS:
+| Measure | GCMS | IRMS | CE  |
+| ------- | ---- | ---- | --- |
+| PT      | N4R  | L    | N4R |
+| CM      | PCC  | MAN  | MAN |
+| PR      | R4   | R2   | R3  |
 
-| Measure | Value |
-| ------- | ----- |
-| PT      | L     |
-| CM      | MAN   |
-| PR      | R2    |
-
-CE:
-
-| Measure | Value |
-| ------- | ----- |
-| PT      | N4R   |
-| CM      | MAN   |
-| PR      | R3    |
-
-**Prioritising analytical techniques based on their optiimal area under
+**Prioritising analytical techniques based on their optimal area under
 the ROC curves**
 
 The optimal combinations of PT, CM and PR generated the following AUC
