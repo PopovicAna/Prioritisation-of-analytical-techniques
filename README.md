@@ -1,4 +1,20 @@
 
+  - [Prioritisation of analytical
+    techniques](#prioritisation-of-analytical-techniques)
+      - [Description](#description)
+      - [Significance](#significance)
+      - [Usage](#usage)
+          - [**Reading in the data and basic
+            tidying:**](#reading-in-the-data-and-basic-tidying)
+          - [**Choosing target variables for GCMS
+            profiles:**](#choosing-target-variables-for-gcms-profiles)
+          - [**Optimisation of the linked and unlinked specimen
+            populations:**](#optimisation-of-the-linked-and-unlinked-specimen-populations)
+      - [Summary of results](#summary-of-results)
+      - [Author](#author)
+      - [Acknowledgements](#acknowledgements)
+      - [References](#references)
+
 # Prioritisation of analytical techniques
 
 Use of Receiver Operating Characteristic (ROC) curves to prioritise
