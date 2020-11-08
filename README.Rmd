@@ -3,22 +3,22 @@ output: github_document
 ---
 
 # Prioritisation of analytical techniques
-Use of Receiver Operating Characteristic curves to prioritise analytical techniques used for illicit drug profiling
+Use of receiver operating characteristic curves to prioritise analytical techniques used for illicit drug profiling
 
 ## Table of contents
 * [Introduction](https://github.com/PopovicAna/Prioritisation-of-analytical-techniques#Introduction)
 * [Usage](https://github.com/PopovicAna/Prioritisation-of-analytical-techniques#Usage)
-* [Sumamry of results](https://github.com/PopovicAna/Prioritisation-of-analytical-techniques#Summary-of-results)
+* [Summary of results](https://github.com/PopovicAna/Prioritisation-of-analytical-techniques#Summary-of-results)
 * [Author](https://github.com/PopovicAna/Prioritisation-of-analytical-techniques#Author)
 * [Acknowledgements](https://github.com/PopovicAna/Prioritisation-of-analytical-techniques#Acknowledgements)
 * [References](https://github.com/PopovicAna/Prioritisation-of-analytical-techniques#References)
 
 ## Introduction
-The risk and harm posed by illicit drugs is ever-growing, which highlights the need for law enforcement, forensic science and health agencies to work collaboratively to combat the supply and demand of these drugs. Forensic science provides a means of determining the presence and quantity of illicit substances in specimens by extracting different drug profile types. These drug profile types are extracted using analytical techniques such as gas chromatography–mass spectrometry (**GCMS**), isotope-ratio mass spectometry (**IRMS**) and capillary electrophoreisis (**CE**), to name a few [1]. Collectively these profile types provide a very accurate representation of a drug specimen. However, many questions have been raised recently by law enforcement and the judicial system regarding the determination of an association or similarity between drug specimens, to identify patterns or trends across them [2]. 
+The risk and harm posed by illicit drugs is ever-growing, which highlights the need for law enforcement, forensic science and health agencies to work collaboratively to combat the supply and demand of these drugs. Forensic science provides a means of determining the presence and quantity of illicit substances in specimens by extracting different drug profile types. These drug profile types are extracted using analytical techniques such as gas chromatography–mass spectrometry (**GCMS**), isotope-ratio mass spectrometry (**IRMS**) and capillary electrophoresis (**CE**), to name a few [1]. Collectively these profile types provide a very accurate representation of a drug specimen. However, many questions have been raised recently by law enforcement and the judicial system regarding the determination of an association or similarity between drug specimens, to identify patterns or trends across them [2]. 
 
-One issue with ansering these questions is that it is often time consuming to extract different drug profile types from specimens. For this reason, this research focused on prioritising one analytical technique used for extracting drug profiles (i.e. GCMS, IRMS or CE) and use it to determine the level of similarity between specimens. To determine the level of similairty between profiles, different comparison metrics (**CM**) are commonly applied to pre-treated (**PT**) data [3]. 
+One issue with answering these questions is that it is often time consuming to extract different drug profile types from specimens. For this reason, this research focused on prioritising one analytical technique used for extracting drug profiles (i.e. GCMS, IRMS or CE) and use it to determine the level of similarity between specimens. To determine the level of similarity between profiles, different comparison metrics (**CM**) are commonly applied to pre-treated (**PT**) data [3]. 
 
-The analytical technique that should be conducted in priority should be able to produce the lowest false positive (FP) and false negative (FN) rates when it comes to determining the similarity between **linked** (specimens from the same seizure) and **unlinked** (specimens from different seizures) specimens, see Figure 1 for an example. To clarify, optimising the combination of CMs and PTs will ensure the greatest separation between linked and unlinked populations, in turn minimising FP and FN specimen linkages for each profile type. These measures need to be compared across profile types to determine which one exhibits the greatest discrimination between linked and unlinked specimens.  
+The analytical technique that should be prioritised should be able to produce the lowest false positive (FP) and false negative (FN) rates when it comes to determining the similarity between **linked** (specimens from the same seizure) and **unlinked** (specimens from different seizures) specimens, see Figure 1 for an example. To clarify, optimising the combination of CMs and PTs will ensure the greatest separation between linked and unlinked populations, in turn minimising FP and FN specimen linkages for each profile type. These measures need to be compared across profile types to determine which one exhibits the greatest discrimination between linked and unlinked specimens.  
 
 ![](Files/Populations.png)
 
