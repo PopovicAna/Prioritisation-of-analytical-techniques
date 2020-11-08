@@ -3,29 +3,36 @@ output: github_document
 ---
 
 # Prioritisation of analytical techniques
-Use of Receiver Operating Characteristic (ROC) curves to prioritise analytical techniques used for illicit drug profiling
+Use of Receiver Operating Characteristic curves to prioritise analytical techniques used for illicit drug profiling
 
 ## Table of contents
-* [Description](https://github.com/PopovicAna/Prioritisation-of-analytical-techniques#Description)
-* [Significance](https://github.com/PopovicAna/Prioritisation-of-analytical-techniques#Significance)
+* [Introduction](https://github.com/PopovicAna/Prioritisation-of-analytical-techniques#Introduction)
 * [Usage](https://github.com/PopovicAna/Prioritisation-of-analytical-techniques#Usage)
 * [Sumamry of results](https://github.com/PopovicAna/Prioritisation-of-analytical-techniques#Summary-of-results)
 * [Author](https://github.com/PopovicAna/Prioritisation-of-analytical-techniques#Author)
 * [Acknowledgements](https://github.com/PopovicAna/Prioritisation-of-analytical-techniques#Acknowledgements)
 * [References](https://github.com/PopovicAna/Prioritisation-of-analytical-techniques#References)
 
+## Introduction
+The risk and harm posed by illicit drugs is ever-growing, which highlights the need for law enforcement, forensic science and health agencies to work collaboratively to combat the supply and demand of these drugs. Forensic science provides a means of determining the presence and quantity of illicit substances in specimens by extracting different drug profile types. These drug profile types are extracted using analytical techniques such as gas chromatography–mass spectrometry (**GCMS**), isotope-ratio mass spectometry (**IRMS**) and capillary electrophoreisis (**CE**), to name a few [1]. Collectively these profile types provide a very accurate representation of a drug specimen. However, many questions have been raised recently by law enforcement and the judicial system regarding the determination of an association or similarity between drug specimens, to identify patterns or trends across them [2]. 
 
-## Description
-The following code reads in simulated data (*original data cannot be disseminated*) for illicit drug specimens, which have been profiled through several analytical techniques. The code then performs a target variable selection, pre-treatment (PT), runs multiple comparison metrics (CM) and takes into account different rules for defining specimen populations (PR). The area under the ROC curve is calculated for each combination of PT and CM to determine the optimal combination, i.e. highest area under the ROC curve. The optimal combination of PT and CM is compared across analytical techniques to determine which technique provides the most discrimination between illicit drug profiles, hence allowing techniques to be prioritised based on their level of discrimination power.
+One issue with ansering these questions is that it is often time consuming to extract different drug profile types from specimens. For this reason, this research focused on prioritising one analytical technique used for extracting drug profiles (i.e. GCMS, IRMS or CE) and use it to determine the level of similarity between specimens. To determine the level of similairty between profiles, different comparison metrics (**CM**) are commonly applied to pre-treated (**PT**) data [3]. 
 
-![](Files/Opt_ROC.png)  
+The analytical technique that should be conducted in priority should be able to produce the lowest false positive (FP) and false negative (FN) rates when it comes to determining the similarity between **linked** (specimens from the same seizure) and **unlinked** (specimens from different seizures) specimens, see Figure 1 for an example. To clarify, optimising the combination of CMs and PTs will ensure the greatest separation between linked and unlinked populations, in turn minimising FP and FN specimen linkages for each profile type. These measures need to be compared across profile types to determine which one exhibits the greatest discrimination between linked and unlinked specimens.  
 
-*Figure 1: Process for identifying the optimal comparison process for a profile type (i.e. analytical technique).*
+![](Files/Populations.png)
 
-## Significance
-This project looked at prioritising the analytical techniques currently used for methylamphetamine (MA) profiling in Australia, to generate timely results. The analytical techniques (i.e. *GC-MS* - by-products, *IRMS* - isotopes and *CE* - enantiomers) used in the profiling method generate information relating to different parts of the MA manufacturing process [1]. Although all this information is valuable in its own way, timely intelligence products can be generated from one profiling technique [2]. As some profiles provide superior discrimination between specimens, their extraction from illicit drug specimens should be prioritised [2].
+*Figure 1: An example of the distribution of linked and unlinked specimen scores; orientation of linked and unlinked populations may vary with the comparison metric used*
 
-## Usage
+To quantify the extent of FPs and FNs for each profile type, the area under the receiver operating characteristic curve (**AUC ROC**) is calculated for multiple combinations of PT and CM. The optimal combination of PT and CM will produce the largest AUC ROC (i.e. closest to 1). The optimal combination of PT and CM is compared across analytical techniques to determine which technique provides the most discrimination between illicit drug profiles, hence allowing techniques to be prioritised based on their level of discrimination power, see Figure 2. 
+
+![](Files/Opt_ROC.png) 
+
+*Figure 2: Process for identifying the optimal comparison process for a profile type (i.e. analytical technique).*
+
+## Usage  
+The following code reads in simulated data (*original data cannot be disseminated*) for illicit drug specimens, which have been profiled through several analytical techniques. The code then performs a target variable selection, runs various PTs and CMs, and takes into account different rules for defining specimen populations (PR).
+
 #### **Reading in the data and basic tidying:**
 ```{r, message=FALSE}
 #Load the required libraries
@@ -50,7 +57,7 @@ CE <- as.data.frame(read.xlsx("Data/Profiles.xlsx", sheet = "CE", rowNames = T, 
 ```
 
 #### **Choosing target variables for GCMS profiles:**
-Not all variables contribute equally to the GCMS specimen profiles and should be removed if they are deemed to be redundant. This was achieved through applying the following criteria; optimal target variables (1) must be present in most specimens at a sufficient concentration; (2)  must have a small intra-variability for specimens within seizures and large inter-variability for specimens between seizures; (3) should be uncorrelated to each other [3]. As the IRMS and CE datasets contained 3 and 2 variables respectively, it was decided to not reduce these datasets any further. **Only the GCMS dataset was subject to variable reduction.** 
+Not all variables contribute equally to the GCMS specimen profiles and should be removed if they are deemed to be redundant. This was achieved through applying the following criteria; optimal target variables (1) must be present in most specimens at a sufficient concentration; (2)  must have a small intra-variability for specimens within seizures and large inter-variability for specimens between seizures; (3) should be uncorrelated to each other [4]. As the IRMS and CE datasets contained 3 and 2 variables respectively, it was decided to not reduce these datasets any further. **Only the GCMS dataset was subject to variable reduction.** 
 
 **(1) Presence of variables in all specimens**
 ```{r}
@@ -74,9 +81,9 @@ Bar <- ggplot(Count, aes(Variables, Percentage*100)) +
 Bar  
 ```
 
-*Figure 2: Presence of variables in GCMS specimens*
+*Figure 3: Presence of variables in GCMS specimens*
 
-The presence of variables in each specimen needs to be identified as it common for these variables not to be detected [3], whether that be due to the limit of detection of the analytical instrument or the target variable simply being absent. As shown in Figure 2, all variables were present in more than 25% of specimens meaning that none of the variables are redundant with respect to this criterion.
+The presence of variables in each specimen needs to be identified as it common for these variables not to be detected [4], whether that be due to the limit of detection of the analytical instrument or the target variable simply being absent. As shown in Figure 3, all variables were present in more than 25% of specimens meaning that none of the variables are redundant with respect to this criterion.
 
 **(2) Intra-variability and inter-variability of variables**
 ```{r}
@@ -116,9 +123,9 @@ psplit <- ggplot(BoxP, aes(x = ind,y = values)) +
 psplit
 ```
 
-*Figure 3: Inter-variability and intra-variability of GCMS variables, several large seizures were selected to visualise the intra-variability*
+*Figure 4: Inter-variability and intra-variability of GCMS variables, several large seizures were selected to visualise the intra-variability*
 
-As well as assessing the presence of variables in specimens, the intra- and inter-variability was evaluated. Box plots were selected as the visualisation method to support interpretation of the data. Several larger seizures were selected to visualise the intra-variability, they can be seen in Figure 3. The inter-variability is represented by single specimen seizures assumed to be unlinked to each other. 
+As well as assessing the presence of variables in specimens, the intra- and inter-variability was evaluated. Box plots were selected as the visualisation method to support interpretation of the data. Several larger seizures were selected to visualise the intra-variability, they can be seen in Figure 4. The inter-variability is represented by single specimen seizures assumed to be unlinked to each other. 
 Through this criterion it was decided to only exclude variables which exhibited very small intra- and inter-variability, as they would only provide minimal discrimination between specimens; this included variable 10 (i.e. V10).
 
 **(3) Correlation of variables**
@@ -133,9 +140,9 @@ corrplot <- ggcorrplot(M, method = "square", type = "upper", outline.col = "whit
 corrplot
 ```
 
-*Figure 4: Rho Spearman correlation coefficients between GCMS variables*
+*Figure 5: Rho Spearman correlation coefficients between GCMS variables*
 
-The correlation between variables was evaluated through Rho Spearman correlation coefficients and respective p-values, the correlation between all variables can be seen in Figure 4. It should be noted that a correlation coefficient above an absolute value of 0.7 is generally considered to be strong [4]. Of the correlations which are statistically significant none of the correlation values are above an absolute value of 0.7. It was decided to not remove any variables considering the results of this criterion. 
+The correlation between variables was evaluated through Rho Spearman correlation coefficients and respective p-values, the correlation between all variables can be seen in Figure 5. It should be noted that a correlation coefficient above an absolute value of 0.7 is generally considered to be strong [5]. Of the correlations which are statistically significant none of the correlation values are above an absolute value of 0.7. It was decided to not remove any variables considering the results of this criterion. 
 
 In summary, it was decided to only remove V10 from subsequent analysis due to the results of the second criterion.
 ```{r}
@@ -145,12 +152,6 @@ GCMS_TV <- GCMS %>% select(!V10)
 
 
 #### **Optimisation of the linked and unlinked specimen populations:**
-**Background:** Many questions have been raised by law enforcement and the judicial system regarding both the determination of an association between objects and/or their classification [5]. To determine the level of association between profiles, CMs can be applied to pre-treated data. A range of CM and PT combinations have been applied in the area of illicit drugs [6]. The optimum combination of CM and PT will ensure the greatest separation between linked (specimens from the same seizure) and unlinked (specimens from different seizures) populations. Optimising the separation between the two populations in turn minimises false positive (FP) and false negative (FN) specimen linkages.
-
-![](Files/Populations.png)
-
-*Figure 5: An example of the distribution of linked and unlinked specimen scores; orientation of linked and unlinked populations may vary with the comparison metric used*
-
 It was discovered that there was a large intra-variability between the MA specimens, which caused a large overlap between the linked and unlinked distributions. For this reason, it was decided to test several rules for defining the two populations (PR) to see how they would affect their separation. The rules are defined as follows:
 
 Rule|Linked Population|Unlinked Population
@@ -285,9 +286,9 @@ CE|0.545
 It was found that the GCMS data was the most discriminative out of the three analytical techniques. 
 
 ## Summary of results
-In summary, it was found that the GC-MS data was the most discriminative out of the three analytical techniques. This was determined though the area under the ROC curve values for the optimised PT/CM/VRR combination of each analytical technique. In short, those values were 0.980 for GC-MS via N4R/PCC/R4, 0.732 for IRMS via L/MAN/R2 and 0.545 for CE profiles via N4R/MAN/R3. 
+In summary, it was found that the GC-MS data was the most discriminative out of the three analytical techniques. This was determined though the area under the ROC curve values for the optimised PT/CM/PR combination of each analytical technique. In short, those values were 0.980 for GC-MS via N4R/PCC/R4, 0.732 for IRMS via L/MAN/R2 and 0.545 for CE profiles via N4R/MAN/R3. 
 
-Although all these profile types are useful individually (e.g. generate information relating to different parts of the manufacturing process) [1], they do not need to be acquired and used concurrently to obtain timely intelligence [2]. In a previous study, it was demonstrated that a single profiling technique could be prioritised to contribute more effectively to the generation of timely intelligence [2]. In this instance a similar result was obtained, it was shown that GC-MS could be prioritised ahead of IRMS and CE techniques. 
+Although all these profile types are useful individually (e.g. generate information relating to different parts of the manufacturing process) [1], they do not need to be acquired and used concurrently to obtain timely intelligence [6]. In a previous study, it was demonstrated that a single profiling technique could be prioritised to contribute more effectively to the generation of timely intelligence [6]. In this instance a similar result was obtained, it was shown that GC-MS could be prioritised ahead of IRMS and CE techniques. 
 
 
 ## Author 
@@ -299,8 +300,8 @@ This work is supported by an Australian Research Council grant (LP160100352).
 
 ## References
 1. Collins, M., et al., Illicit drug profiling: the Australian experience. Australian Journal of Forensic Sciences, 2007. 39(1): p. 25-32. 
-2. Morelato, M., et al., The use of organic and inorganic impurities found in MDMA police seizures in a drug intelligence perspective. Sci Justice, 2014. 54(1): p. 32-41.
-3. Morelato, M., Forensic drug profiling: A tool for intelligence-led policing. 2015
-4. Moore, D.S., Chapter 5. Regression, in The Basic Practice of Statistics. 2010, Freeman. p. 157.
-5. Zadora, G., Chemometrics and Statistical Considerations in Forensic Science, in Encyclopedia of Analytical Chemistry. 2006, John Wiley & Sons, Ltd.
-6. Popovic, A., et al., Review of the most common chemometric techniques in illicit drug profiling. Forensic Science International, 2019. 302: p. 109911.
+2. Zadora, G., Chemometrics and Statistical Considerations in Forensic Science, in Encyclopedia of Analytical Chemistry. 2006, John Wiley & Sons, Ltd.
+3. Popovic, A., et al., Review of the most common chemometric techniques in illicit drug profiling. Forensic Science International, 2019. 302: p. 109911.
+4. Morelato, M., Forensic drug profiling: A tool for intelligence-led policing. 2015
+5. Moore, D.S., Chapter 5. Regression, in The Basic Practice of Statistics. 2010, Freeman. p. 157.
+6. Morelato, M., et al., The use of organic and inorganic impurities found in MDMA police seizures in a drug intelligence perspective. Sci Justice, 2014. 54(1): p. 32-41.
