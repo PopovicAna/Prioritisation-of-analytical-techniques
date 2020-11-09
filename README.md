@@ -35,7 +35,7 @@ One issue with answering these questions is that it is often time
 consuming to extract different drug profile types from specimens. For
 this reason, this research focused on prioritising one analytical
 technique used for extracting drug profiles (i.e. GCMS, IRMS or CE) and
-use it to determine the level of similarity between specimens. To
+used the respective dataset to determine the level of similarity between specimens. To
 determine the level of similarity between profiles, different comparison
 metrics (**CM**) are commonly applied to pre-treated (**PT**) data
 \[3\].
