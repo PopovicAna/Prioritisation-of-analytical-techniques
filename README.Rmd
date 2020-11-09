@@ -59,7 +59,9 @@ CE <- as.data.frame(read.xlsx("Data/Profiles.xlsx", sheet = "CE", rowNames = T, 
 #### **Choosing target variables for GCMS profiles:**
 Not all variables contribute equally to the GCMS specimen profiles and should be removed if they are deemed to be redundant. This was achieved through applying the following criteria; optimal target variables (1) must be present in most specimens at a sufficient concentration; (2)  must have a small intra-variability for specimens within seizures and large inter-variability for specimens between seizures; (3) should be uncorrelated to each other [4]. As the IRMS and CE datasets contained 3 and 2 variables respectively, it was decided to not reduce these datasets any further. **Only the GCMS dataset was subject to variable reduction.** 
 
+
 **(1) Presence of variables in all specimens**  
+
 The presence of variables in each specimen needs to be identified as it common for these variables not to be detected [4], whether that be due to the limit of detection of the analytical instrument or the target variable simply being absent. As shown in Figure 3, all variables were present in more than 25% of specimens meaning that none of the variables are redundant with respect to this criterion.
 ```{r}
 #Bar plot of target variables presence in specimens
@@ -83,6 +85,7 @@ Bar
 ```
 
 *Figure 3: Presence of variables in GCMS specimens*
+
 
 **(2) Intra-variability and inter-variability of variables**  
 
@@ -128,7 +131,9 @@ psplit
 
 Through this criterion it was decided to only exclude variables which exhibited a larger intra-variability and a smaller inter-variability, as they would only provide minimal discrimination between specimens; this included variable 04 (i.e. V04).
 
+
 **(3) Correlation of variables**  
+
 The correlation between variables was evaluated through Rho Spearman correlation coefficients and respective p-values, the correlation between all variables can be seen in Figure 5. It should be noted that a correlation coefficient above an absolute value of 0.7 is generally considered to be strong [5].
 ```{r}
 M = cor(GCMS, method = "spearman")
