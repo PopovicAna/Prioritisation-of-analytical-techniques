@@ -145,7 +145,7 @@ Bar
 *Figure 3: Presence of variables in GCMS specimens*
 
 The presence of variables in each specimen needs to be identified as it
-common for these variables not to be detected \[4\], whether that be due
+is common for these variables not to be detected \[4\], whether that be due
 to the limit of detection of the analytical instrument or the target
 variable simply being absent. As shown in Figure 3, all variables were
 present in more than 25% of specimens meaning that none of the variables
