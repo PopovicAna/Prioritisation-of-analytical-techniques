@@ -85,6 +85,7 @@ Bar
 *Figure 3: Presence of variables in GCMS specimens*
 
 **(2) Intra-variability and inter-variability of variables**  
+
 As well as assessing the presence of variables in specimens, the intra- and inter-variability was evaluated. Box plots were selected as the visualisation method to support interpretation of the data. Several larger seizures were selected to visualise the intra-variability, they can be seen in Figure 4. The inter-variability is represented by single specimen seizures assumed to be unlinked to each other. 
 ```{r, fig.dim=c(5,8)}
 Specimen_List <- data.frame(row.names = rownames(GCMS))
