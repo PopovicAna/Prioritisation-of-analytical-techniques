@@ -35,7 +35,7 @@ One issue with answering these questions is that it is often time
 consuming to extract different drug profile types from specimens. For
 this reason, this research focused on prioritising one analytical
 technique used for extracting drug profiles (i.e. GCMS, IRMS or CE) and
-use it to determine the level of similarity between specimens. To
+used the respective dataset to determine the level of similarity between specimens. To
 determine the level of similarity between profiles, different comparison
 metrics (**CM**) are commonly applied to pre-treated (**PT**) data
 \[3\].
@@ -150,6 +150,7 @@ Bar
 
 *Figure 3: Presence of variables in GCMS specimens*
 
+<<<<<<< HEAD
 **(2) Intra-variability and inter-variability of variables**  
 As well as assessing the presence of variables in specimens, the intra-
 and inter-variability was evaluated. Box plots were selected as the
@@ -157,6 +158,16 @@ visualisation method to support interpretation of the data. Several
 larger seizures were selected to visualise the intra-variability, they
 can be seen in Figure 4. The inter-variability is represented by single
 specimen seizures assumed to be unlinked to each other.
+=======
+The presence of variables in each specimen needs to be identified as it
+is common for these variables not to be detected \[4\], whether that be due
+to the limit of detection of the analytical instrument or the target
+variable simply being absent. As shown in Figure 3, all variables were
+present in more than 25% of specimens meaning that none of the variables
+are redundant with respect to this criterion.
+
+**(2) Intra-variability and inter-variability of variables**
+>>>>>>> 3689f3ca235c9985f4abf4892f8a2d9dcf145528
 
 ``` r
 Specimen_List <- data.frame(row.names = rownames(GCMS))
