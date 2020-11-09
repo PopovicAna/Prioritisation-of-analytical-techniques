@@ -4,8 +4,20 @@
 Use of receiver operating characteristic curves to prioritise analytical
 techniques used for illicit drug profiling
 
+## Code overview
+
+The following code reads in simulated data (*original data cannot be
+disseminated*) for illicit drug specimens, which have been profiled
+through several analytical techniques. The code then performs a target
+variable selection, runs various pre-treatments and comparison metrics,
+and takes into account different rules for defining specimen
+populations. The discrimination power of each analytical technique is
+assessed to determine which one exibits the optimal performance.
+
 ## Table of contents
 
+  - [Code
+    overview](https://github.com/PopovicAna/Prioritisation-of-analytical-techniques#code-overview)
   - [Introduction](https://github.com/PopovicAna/Prioritisation-of-analytical-techniques#Introduction)
   - [Usage](https://github.com/PopovicAna/Prioritisation-of-analytical-techniques#Usage)
   - [Summary of
@@ -73,12 +85,6 @@ Figure 2.
 profile type (i.e. analytical technique).*
 
 ## Usage
-
-The following code reads in simulated data (*original data cannot be
-disseminated*) for illicit drug specimens, which have been profiled
-through several analytical techniques. The code then performs a target
-variable selection, runs various PTs and CMs, and takes into account
-different rules for defining specimen populations (PR).
 
 #### **Reading in the data and basic tidying:**
 
