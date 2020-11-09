@@ -117,13 +117,19 @@ uncorrelated to each other \[4\]. As the IRMS and CE datasets contained
 datasets any further. **Only the GCMS dataset was subject to variable
 reduction.**
 
-**(1) Presence of variables in all specimens**
+**(1) Presence of variables in all specimens**  
+The presence of variables in each specimen needs to be identified as it
+common for these variables not to be detected \[4\], whether that be due
+to the limit of detection of the analytical instrument or the target
+variable simply being absent. As shown in Figure 3, all variables were
+present in more than 25% of specimens meaning that none of the variables
+are redundant with respect to this criterion.
 
 ``` r
 #Bar plot of target variables presence in specimens
 Count <- data.frame(Variables = colnames(GCMS),
-                   Percentage = round((colSums(GCMS !=0)/nrow(GCMS)), digits = 5),
-                   row.names = NULL)
+                    Percentage = round((colSums(GCMS !=0)/nrow(GCMS)), digits = 5),
+                    row.names = NULL)
 
 Bar <- ggplot(Count, aes(Variables, Percentage*100)) +
   geom_bar(stat = "identity") +
@@ -144,14 +150,13 @@ Bar
 
 *Figure 3: Presence of variables in GCMS specimens*
 
-The presence of variables in each specimen needs to be identified as it
-common for these variables not to be detected \[4\], whether that be due
-to the limit of detection of the analytical instrument or the target
-variable simply being absent. As shown in Figure 3, all variables were
-present in more than 25% of specimens meaning that none of the variables
-are redundant with respect to this criterion.
-
-**(2) Intra-variability and inter-variability of variables**
+**(2) Intra-variability and inter-variability of variables**  
+As well as assessing the presence of variables in specimens, the intra-
+and inter-variability was evaluated. Box plots were selected as the
+visualisation method to support interpretation of the data. Several
+larger seizures were selected to visualise the intra-variability, they
+can be seen in Figure 4. The inter-variability is represented by single
+specimen seizures assumed to be unlinked to each other.
 
 ``` r
 Specimen_List <- data.frame(row.names = rownames(GCMS))
@@ -195,17 +200,17 @@ psplit
 *Figure 4: Inter-variability and intra-variability of GCMS variables,
 several large seizures were selected to visualise the intra-variability*
 
-As well as assessing the presence of variables in specimens, the intra-
-and inter-variability was evaluated. Box plots were selected as the
-visualisation method to support interpretation of the data. Several
-larger seizures were selected to visualise the intra-variability, they
-can be seen in Figure 4. The inter-variability is represented by single
-specimen seizures assumed to be unlinked to each other. Through this
-criterion it was decided to only exclude variables which exhibited very
-small intra- and inter-variability, as they would only provide minimal
-discrimination between specimens; this included variable 10 (i.e. V10).
+Through this criterion it was decided to only exclude variables which
+exhibited a larger intra-variability and a smaller inter-variability, as
+they would only provide minimal discrimination between specimens; this
+included variable 04 (i.e. V04).
 
-**(3) Correlation of variables**
+**(3) Correlation of variables**  
+The correlation between variables was evaluated through Rho Spearman
+correlation coefficients and respective p-values, the correlation
+between all variables can be seen in Figure 5. It should be noted that a
+correlation coefficient above an absolute value of 0.7 is generally
+considered to be strong \[5\].
 
 ``` r
 M = cor(GCMS, method = "spearman")
@@ -222,21 +227,16 @@ corrplot
 
 *Figure 5: Rho Spearman correlation coefficients between GCMS variables*
 
-The correlation between variables was evaluated through Rho Spearman
-correlation coefficients and respective p-values, the correlation
-between all variables can be seen in Figure 5. It should be noted that a
-correlation coefficient above an absolute value of 0.7 is generally
-considered to be strong \[5\]. Of the correlations which are
-statistically significant none of the correlation values are above an
-absolute value of 0.7. It was decided to not remove any variables
-considering the results of this criterion.
+Of the correlations which are statistically significant none of the
+correlation values are above an absolute value of 0.7. It was decided to
+not remove any variables considering the results of this criterion.
 
-In summary, it was decided to only remove V10 from subsequent analysis
+In summary, it was decided to only remove V04 from subsequent analysis
 due to the results of the second criterion.
 
 ``` r
 # Extracting the chosen target variables for subsequent analysis
-GCMS_TV <- GCMS %>% select(!V10)
+GCMS_TV <- GCMS %>% select(!V04)
 ```
 
 #### **Optimisation of the linked and unlinked specimen populations:**
@@ -364,32 +364,178 @@ ggplot(OPT_GCMS_PT_CM_R,aes(x=Freq,colour=label))+
 inter-variability (black line) of ENIPID GC-MS profiles, using the
 N4R/PCC/R4 combination*
 
-**The optimal combination of PT, CM and PR for each analytical
-technique**
+**The optimal combination of PT, CM and PR and respective AUC ROC for
+each analytical technique**
 
-Following the same method applied to the GCMS dataset the optimal values
-for all three analytical techniques are as follows:
+Following the same method applied to the GCMS dataset, the optimal
+values and respective ROC AUC for all three analytical techniques are as
+follows:
 
-| Measure | GCMS | IRMS | CE  |
-| ------- | ---- | ---- | --- |
-| PT      | N4R  | L    | N4R |
-| CM      | PCC  | MAN  | MAN |
-| PR      | R4   | R2   | R3  |
+``` r
+OPT_VAL <- data.frame(
+  Profile = c("GCMS","IRMS","CE"),
+  PT = c(OPT_GCMS_PT, OPT_IRMS_PT, OPT_CE_PT),
+  CM = c(OPT_GCMS_CM, OPT_IRMS_CM, OPT_CE_CM),
+  PR = c(OPT_GCMS_PR, OPT_IRMS_PR, OPT_CE_PR),
+  AUC = c(OPT_GCMS_AUC, OPT_IRMS_AUC, OPT_CE_AUC)
+)
 
-**Prioritising analytical techniques based on their optimal area under
-the ROC curves**
+library(formattable)
 
-The optimal combinations of PT, CM and PR generated the following AUC
-ROC for each analytical technique:
+formattable(OPT_VAL,
+            align = c("l",rep("c", NCOL(OPT_VAL) - 1)),
+            list(`Profile` = formatter("span", style = ~ style(color = "grey", font.weight = "bold")),
+            `AUC` = color_tile("#DeF7E9", "#71CA97"))
+            )
+```
 
-| Technique | AUC   |
-| --------- | ----- |
-| GCMS      | 0.980 |
-| IRMS      | 0.732 |
-| CE        | 0.545 |
+<table class="table table-condensed">
 
-It was found that the GCMS data was the most discriminative out of the
-three analytical techniques.
+<thead>
+
+<tr>
+
+<th style="text-align:left;">
+
+Profile
+
+</th>
+
+<th style="text-align:center;">
+
+PT
+
+</th>
+
+<th style="text-align:center;">
+
+CM
+
+</th>
+
+<th style="text-align:center;">
+
+PR
+
+</th>
+
+<th style="text-align:center;">
+
+AUC
+
+</th>
+
+</tr>
+
+</thead>
+
+<tbody>
+
+<tr>
+
+<td style="text-align:left;">
+
+<span style="color: grey; font-weight: bold">GCMS</span>
+
+</td>
+
+<td style="text-align:center;">
+
+N4R
+
+</td>
+
+<td style="text-align:center;">
+
+PCC
+
+</td>
+
+<td style="text-align:center;">
+
+R4
+
+</td>
+
+<td style="text-align:center;">
+
+<span style="display: block; padding: 0 4px; border-radius: 4px; background-color: #71ca97">0.9731269</span>
+
+</td>
+
+</tr>
+
+<tr>
+
+<td style="text-align:left;">
+
+<span style="color: grey; font-weight: bold">IRMS</span>
+
+</td>
+
+<td style="text-align:center;">
+
+L
+
+</td>
+
+<td style="text-align:center;">
+
+MAN
+
+</td>
+
+<td style="text-align:center;">
+
+R2
+
+</td>
+
+<td style="text-align:center;">
+
+<span style="display: block; padding: 0 4px; border-radius: 4px; background-color: #aee3c5">0.7324112</span>
+
+</td>
+
+</tr>
+
+<tr>
+
+<td style="text-align:left;">
+
+<span style="color: grey; font-weight: bold">CE </span>
+
+</td>
+
+<td style="text-align:center;">
+
+N4R
+
+</td>
+
+<td style="text-align:center;">
+
+MAN
+
+</td>
+
+<td style="text-align:center;">
+
+R3
+
+</td>
+
+<td style="text-align:center;">
+
+<span style="display: block; padding: 0 4px; border-radius: 4px; background-color: #def7e9">0.5454157</span>
+
+</td>
+
+</tr>
+
+</tbody>
+
+</table>
 
 ## Summary of results
 

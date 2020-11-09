@@ -59,12 +59,13 @@ CE <- as.data.frame(read.xlsx("Data/Profiles.xlsx", sheet = "CE", rowNames = T, 
 #### **Choosing target variables for GCMS profiles:**
 Not all variables contribute equally to the GCMS specimen profiles and should be removed if they are deemed to be redundant. This was achieved through applying the following criteria; optimal target variables (1) must be present in most specimens at a sufficient concentration; (2)  must have a small intra-variability for specimens within seizures and large inter-variability for specimens between seizures; (3) should be uncorrelated to each other [4]. As the IRMS and CE datasets contained 3 and 2 variables respectively, it was decided to not reduce these datasets any further. **Only the GCMS dataset was subject to variable reduction.** 
 
-**(1) Presence of variables in all specimens**
+**(1) Presence of variables in all specimens**  
+The presence of variables in each specimen needs to be identified as it common for these variables not to be detected [4], whether that be due to the limit of detection of the analytical instrument or the target variable simply being absent. As shown in Figure 3, all variables were present in more than 25% of specimens meaning that none of the variables are redundant with respect to this criterion.
 ```{r}
 #Bar plot of target variables presence in specimens
 Count <- data.frame(Variables = colnames(GCMS),
-                   Percentage = round((colSums(GCMS !=0)/nrow(GCMS)), digits = 5),
-                   row.names = NULL)
+                    Percentage = round((colSums(GCMS !=0)/nrow(GCMS)), digits = 5),
+                    row.names = NULL)
 
 Bar <- ggplot(Count, aes(Variables, Percentage*100)) +
   geom_bar(stat = "identity") +
@@ -83,10 +84,9 @@ Bar
 
 *Figure 3: Presence of variables in GCMS specimens*
 
-The presence of variables in each specimen needs to be identified as it common for these variables not to be detected [4], whether that be due to the limit of detection of the analytical instrument or the target variable simply being absent. As shown in Figure 3, all variables were present in more than 25% of specimens meaning that none of the variables are redundant with respect to this criterion.
-
-**(2) Intra-variability and inter-variability of variables**
-```{r}
+**(2) Intra-variability and inter-variability of variables**  
+As well as assessing the presence of variables in specimens, the intra- and inter-variability was evaluated. Box plots were selected as the visualisation method to support interpretation of the data. Several larger seizures were selected to visualise the intra-variability, they can be seen in Figure 4. The inter-variability is represented by single specimen seizures assumed to be unlinked to each other. 
+```{r, fig.dim=c(5,8)}
 Specimen_List <- data.frame(row.names = rownames(GCMS))
 Specimen_List$Group <- Lookup$Group[match(row.names(Specimen_List),Lookup$Specimen)]
 Specimen_List$Count <- plyr::count(Specimen_List,"Group")$freq[match(Specimen_List$Group,plyr::count(Specimen_List,"Group")$Group)]
@@ -125,10 +125,10 @@ psplit
 
 *Figure 4: Inter-variability and intra-variability of GCMS variables, several large seizures were selected to visualise the intra-variability*
 
-As well as assessing the presence of variables in specimens, the intra- and inter-variability was evaluated. Box plots were selected as the visualisation method to support interpretation of the data. Several larger seizures were selected to visualise the intra-variability, they can be seen in Figure 4. The inter-variability is represented by single specimen seizures assumed to be unlinked to each other. 
-Through this criterion it was decided to only exclude variables which exhibited very small intra- and inter-variability, as they would only provide minimal discrimination between specimens; this included variable 10 (i.e. V10).
+Through this criterion it was decided to only exclude variables which exhibited a larger intra-variability and a smaller inter-variability, as they would only provide minimal discrimination between specimens; this included variable 04 (i.e. V04).
 
-**(3) Correlation of variables**
+**(3) Correlation of variables**  
+The correlation between variables was evaluated through Rho Spearman correlation coefficients and respective p-values, the correlation between all variables can be seen in Figure 5. It should be noted that a correlation coefficient above an absolute value of 0.7 is generally considered to be strong [5].
 ```{r}
 M = cor(GCMS, method = "spearman")
 corrplot <- ggcorrplot(M, method = "square", type = "upper", outline.col = "white", lab = TRUE, 
@@ -142,14 +142,13 @@ corrplot
 
 *Figure 5: Rho Spearman correlation coefficients between GCMS variables*
 
-The correlation between variables was evaluated through Rho Spearman correlation coefficients and respective p-values, the correlation between all variables can be seen in Figure 5. It should be noted that a correlation coefficient above an absolute value of 0.7 is generally considered to be strong [5]. Of the correlations which are statistically significant none of the correlation values are above an absolute value of 0.7. It was decided to not remove any variables considering the results of this criterion. 
+Of the correlations which are statistically significant none of the correlation values are above an absolute value of 0.7. It was decided to not remove any variables considering the results of this criterion. 
 
-In summary, it was decided to only remove V10 from subsequent analysis due to the results of the second criterion.
+In summary, it was decided to only remove V04 from subsequent analysis due to the results of the second criterion.
 ```{r}
 # Extracting the chosen target variables for subsequent analysis
-GCMS_TV <- GCMS %>% select(!V10)
+GCMS_TV <- GCMS %>% select(!V04)
 ```
-
 
 #### **Optimisation of the linked and unlinked specimen populations:**
 It was discovered that there was a large intra-variability between the MA specimens, which caused a large overlap between the linked and unlinked distributions. For this reason, it was decided to test several rules for defining the two populations (PR) to see how they would affect their separation. The rules are defined as follows:
@@ -163,7 +162,7 @@ R4|specimens from the same seizure, which contained two to ten specimens, and sp
 
 For the full list of PTs, CMs and PRs used in this analysis please see the "DataOptFunctions.R" file.
 
-**A GCMS example - determining the optimal combination of PT, CM and PR**
+**A GCMS example - determining the optimal combination of PT, CM and PR**  
 ```{r}
 # Reading in several functions needed for subsequent analysis
 source("Files/DataOptFunctions.R", local = T)
@@ -262,28 +261,129 @@ ggplot(OPT_GCMS_PT_CM_R,aes(x=Freq,colour=label))+
 
 *Figure 7: Optimised distribution of intra-variability (grey line) and inter-variability (black line) of ENIPID GC-MS profiles, using the N4R/PCC/R4 combination*
 
-**The optimal combination of PT, CM and PR for each analytical technique**
+**The optimal combination of PT, CM and PR and respective AUC ROC for each analytical technique**
+```{r, echo=FALSE}
+#### IRMS
+# Adjusting neagtive values and applying pre-treatments
+IRMS = IRMS-(min(IRMS))+0.1
 
-Following the same method applied to the GCMS dataset the optimal values for all three analytical techniques are as follows:
+IRMS_N = IRMS/rowSums(IRMS)
+IRMS_N2R = IRMS_N^0.5
+IRMS_N4R = IRMS_N^0.25
+IRMS_L = log10(IRMS)
 
-Measure|GCMS|IRMS|CE
--|-|-|-
-PT|N4R|L|N4R
-CM|PCC|MAN|MAN
-PR|R4|R2|R3
+# Applying population rules and comparison metrics to the data
+IRMS_PT_CM_R = lapply(  
+  list(N=IRMS_N,N2R=IRMS_N2R,N4R=IRMS_N4R,L=IRMS_L), 
+  function(X){
+    lapply(
+      list(CAN=CAN,EUC=EUC,MAN=MAN,MCF=MCF,PCC=PCC),
+      function(CM,PT){
+        list(
+          R1 = R1(CM(as.matrix(PT))),
+          R2 = data.frame(R2(CM(L(PT)),CM(U(PT)))),
+          R3 = R3(CM(as.matrix(PT))),
+          R4 = data.frame(R4(CM(L(PT)),CM(as.matrix(PT)))))
+      },
+      PT=X)
+  })
 
+# Adding in comparison metric and pupulation rule info
+for(i in 1:length(IRMS_PT_CM_R)){
+  for(j in 1:length(IRMS_PT_CM_R[[1]])){
+    for(k in 1:length(IRMS_PT_CM_R[[1]][[1]])){
+      IRMS_PT_CM_R[[i]][[j]][[k]]$Freq = (IRMS_PT_CM_R[[i]][[j]][[k]]$Freq/max(IRMS_PT_CM_R[[i]][[j]][[k]]$Freq))*100
+      IRMS_PT_CM_R[[i]][[j]][[k]]$PT = rep(c("N","N2R","N4R","L")[i],nrow(IRMS_PT_CM_R[[i]][[j]][[k]]))
+      IRMS_PT_CM_R[[i]][[j]][[k]]$CM = rep(c("CAN","EUC","MAN","MCF","PCC")[j],nrow(IRMS_PT_CM_R[[i]][[j]][[k]]))
+      IRMS_PT_CM_R[[i]][[j]][[k]]$R = rep((paste0("R",k)),nrow(IRMS_PT_CM_R[[i]][[j]][[k]])) 
+    }
+  }
+}
 
-**Prioritising analytical techniques based on their optimal area under the ROC curves**
+# Extracting the area under curve (AUC) of each reciever operating characteristic (ROC) calculation
+IRMS_PT_CM_R <- do.call(rbind,do.call(rbind,do.call(rbind,IRMS_PT_CM_R)))
 
-The optimal combinations of PT, CM and PR generated the following AUC ROC for each analytical technique:
+IRMS_AUC <- IRMS_PT_CM_R %>% 
+  group_by(PT,CM,R) %>% 
+  group_map(~{roc(.x$label, .x$Freq, levels = c("Inter", "Intra"), direction = ">")$auc})
 
-Technique|AUC
--|-
-GCMS|0.980
-IRMS|0.732
-CE|0.545
+IRMS_ROC <- data.frame(AUC = unlist(IRMS_AUC)) %>% bind_cols(IRMS_PT_CM_R %>% distinct(PT,CM,R))
 
-It was found that the GCMS data was the most discriminative out of the three analytical techniques. 
+# Defining the optimal comparison metric and population rule based on the ROC AUC
+OPT_IRMS_AUC <- max(IRMS_ROC$AUC)
+OPT_IRMS_PT <- IRMS_ROC[which.max(IRMS_ROC$AUC),"PT"]
+OPT_IRMS_CM <- IRMS_ROC[which.max(IRMS_ROC$AUC),"CM"]
+OPT_IRMS_PR <- IRMS_ROC[which.max(IRMS_ROC$AUC),"R"]
+
+#### CE
+# Applying pre-treatments
+CE_N = CE/rowSums(CE)
+CE_N2R = CE_N^0.5
+CE_N4R = CE_N^0.25
+
+# Applying population rules and comparison metrics to the data
+CE_PT_CM_R = lapply(  
+  list(N=CE_N,N2R=CE_N2R,N4R=CE_N4R), 
+  function(X){
+    lapply(
+      list(CAN=CAN,EUC=EUC,MAN=MAN,MCF=MCF,PCC=PCC),
+      function(CM,PT){
+        list(
+          R1 = R1(CM(as.matrix(PT))),
+          R2 = data.frame(R2(CM(L(PT)),CM(U(PT)))),
+          R3 = R3(CM(as.matrix(PT))),
+          R4 = data.frame(R4(CM(L(PT)),CM(as.matrix(PT)))))
+      },
+      PT=X)
+  })
+
+# Adding in comparison metric and pupulation rule info
+for(i in 1:length(CE_PT_CM_R)){
+  for(j in 1:length(CE_PT_CM_R[[1]])){
+    for(k in 1:length(CE_PT_CM_R[[1]][[1]])){
+      CE_PT_CM_R[[i]][[j]][[k]]$Freq = (CE_PT_CM_R[[i]][[j]][[k]]$Freq/max(CE_PT_CM_R[[i]][[j]][[k]]$Freq))*100
+      CE_PT_CM_R[[i]][[j]][[k]]$PT = rep(c("N","N2R","N4R")[i],nrow(CE_PT_CM_R[[i]][[j]][[k]]))
+      CE_PT_CM_R[[i]][[j]][[k]]$CM = rep(c("CAN","EUC","MAN","MCF","PCC")[j],nrow(CE_PT_CM_R[[i]][[j]][[k]]))
+      CE_PT_CM_R[[i]][[j]][[k]]$R = rep((paste0("R",k)),nrow(CE_PT_CM_R[[i]][[j]][[k]])) 
+    }
+  }
+}
+
+# Extracting the area under curve (AUC) of each reciever operating characteristic (ROC) calculation
+CE_PT_CM_R <- do.call(rbind,do.call(rbind,do.call(rbind,CE_PT_CM_R)))
+
+CE_AUC <- CE_PT_CM_R %>% 
+  group_by(PT,CM,R) %>% 
+  group_map(~{roc(.x$label, .x$Freq, levels = c("Inter", "Intra"), direction = ">")$auc})
+
+CE_ROC <- data.frame(AUC = unlist(CE_AUC)) %>% bind_cols(CE_PT_CM_R %>% distinct(PT,CM,R))
+
+# Defining the optimal comparison metric and population rule based on the ROC AUC
+OPT_CE_AUC <- max(CE_ROC$AUC)
+OPT_CE_PT <- CE_ROC[which.max(CE_ROC$AUC),"PT"]
+OPT_CE_CM <- CE_ROC[which.max(CE_ROC$AUC),"CM"]
+OPT_CE_PR <- CE_ROC[which.max(CE_ROC$AUC),"R"]
+```
+
+Following the same method applied to the GCMS dataset, the optimal values and respective ROC AUC for all three analytical techniques are as follows:
+```{r}
+OPT_VAL <- data.frame(
+  Profile = c("GCMS","IRMS","CE"),
+  PT = c(OPT_GCMS_PT, OPT_IRMS_PT, OPT_CE_PT),
+  CM = c(OPT_GCMS_CM, OPT_IRMS_CM, OPT_CE_CM),
+  PR = c(OPT_GCMS_PR, OPT_IRMS_PR, OPT_CE_PR),
+  AUC = c(OPT_GCMS_AUC, OPT_IRMS_AUC, OPT_CE_AUC)
+)
+
+library(formattable)
+
+formattable(OPT_VAL,
+            align = c("l",rep("c", NCOL(OPT_VAL) - 1)),
+            list(`Profile` = formatter("span", style = ~ style(color = "grey", font.weight = "bold")),
+            `AUC` = color_tile("#DeF7E9", "#71CA97"))
+            )
+```
+
 
 ## Summary of results
 In summary, it was found that the GC-MS data was the most discriminative out of the three analytical techniques. This was determined though the area under the ROC curve values for the optimised PT/CM/PR combination of each analytical technique. In short, those values were 0.980 for GC-MS via N4R/PCC/R4, 0.732 for IRMS via L/MAN/R2 and 0.545 for CE profiles via N4R/MAN/R3. 
