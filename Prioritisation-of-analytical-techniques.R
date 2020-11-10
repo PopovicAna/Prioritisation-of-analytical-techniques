@@ -99,7 +99,7 @@ source("Files/DataOptFunctions.R", local = T)
 #### GCMS
 
 # Extracting the chosen target variables for subsequent analysis
-GCMS_TV <- GCMS %>% select(!V10)
+GCMS_TV <- GCMS %>% select(!V04)
 
 # Applying pre-treatments
 GCMS_TV_N <- GCMS_TV/rowSums(GCMS_TV)

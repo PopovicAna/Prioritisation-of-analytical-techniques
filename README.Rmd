@@ -7,7 +7,7 @@ Use of receiver operating characteristic curves to prioritise analytical techniq
 
 ## Table of contents
 * [Code overview](https://github.com/PopovicAna/Prioritisation-of-analytical-techniques#code-overview)
-* [Introduction](https://github.com/PopovicAna/Prioritisation-of-analytical-techniques#Introduction)
+* [Scope](https://github.com/PopovicAna/Prioritisation-of-analytical-techniques#Scope)
 * [Usage](https://github.com/PopovicAna/Prioritisation-of-analytical-techniques#Usage)
 * [Summary of results](https://github.com/PopovicAna/Prioritisation-of-analytical-techniques#Summary-of-results)
 * [Author](https://github.com/PopovicAna/Prioritisation-of-analytical-techniques#Author)
@@ -17,7 +17,7 @@ Use of receiver operating characteristic curves to prioritise analytical techniq
 ## Code overview
 The following code reads in simulated data (*original data cannot be disseminated*) for illicit drug specimens, which have been profiled through several analytical techniques. The code then performs a target variable selection, runs various pre-treatments and comparison metrics, and takes into account different rules for defining specimen populations. The discrimination power of each analytical technique is assessed to determine which one exibits the optimal performance. 
 
-## Introduction
+## Scope
 The risk and harm posed by illicit drugs is ever-growing, which highlights the need for law enforcement, forensic science and health agencies to work collaboratively to combat the supply and demand of these drugs. Forensic science provides a means of determining the presence and quantity of illicit substances in specimens by extracting different drug profile types. These drug profile types are extracted using analytical techniques such as gas chromatography–mass spectrometry (**GCMS**), isotope-ratio mass spectrometry (**IRMS**) and capillary electrophoresis (**CE**), to name a few [1]. Collectively these profile types provide a very accurate representation of a drug specimen. However, many questions have been raised recently by law enforcement and the judicial system regarding the determination of an association or similarity between drug specimens, to identify patterns or trends across them [2]. 
 
 One issue with answering these questions is that it is often time consuming to extract different drug profile types from specimens. For this reason, this research focused on prioritising one analytical technique used for extracting drug profiles (i.e. GCMS, IRMS or CE) and use it to determine the level of similarity between specimens. To determine the level of similarity between profiles, different comparison metrics (**CM**) are commonly applied to pre-treated (**PT**) data [3]. 

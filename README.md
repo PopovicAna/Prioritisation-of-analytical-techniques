@@ -8,7 +8,7 @@ techniques used for illicit drug profiling
 
   - [Code
     overview](https://github.com/PopovicAna/Prioritisation-of-analytical-techniques#code-overview)
-  - [Introduction](https://github.com/PopovicAna/Prioritisation-of-analytical-techniques#Introduction)
+  - [Scope](https://github.com/PopovicAna/Prioritisation-of-analytical-techniques#Scope)
   - [Usage](https://github.com/PopovicAna/Prioritisation-of-analytical-techniques#Usage)
   - [Summary of
     results](https://github.com/PopovicAna/Prioritisation-of-analytical-techniques#Summary-of-results)
@@ -26,7 +26,7 @@ and takes into account different rules for defining specimen
 populations. The discrimination power of each analytical technique is
 assessed to determine which one exibits the optimal performance.
 
-## Introduction
+## Scope
 
 The risk and harm posed by illicit drugs is ever-growing, which
 highlights the need for law enforcement, forensic science and health
